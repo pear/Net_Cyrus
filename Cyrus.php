@@ -340,9 +340,9 @@ class Net_Cyrus extends Net_IMAP
     {
         $oldPrivs = $this->_setAdminPriv($mailbox);
         if( PEAR::isError( $response = parent::deleteMailbox($mailbox) )){
+            $this->_resetAdminPriv($mailbox, $oldPrivs);
             return $response;
         }
-        $this->_resetAdminPriv($mailbox, $oldPrivs);
         return true;
     }
 
