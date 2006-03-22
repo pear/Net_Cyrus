@@ -1,4 +1,4 @@
-<?
+<?php
 //
 // +----------------------------------------------------------------------+
 // | PHP Version 4                                                        |
@@ -27,7 +27,7 @@ this is only useful for testing and to high level IMAP access example use
 */
 
 
-include_once('Net/Cyrus.php');
+require_once('Net/Cyrus.php');
 //include_once('./Cyrus_horde.php');
 
 error_reporting(E_ALL);
@@ -107,7 +107,6 @@ $user_to_create_new_name='damiancito_new';
 echo "deleteUser('$user_to_create')\n";
 if( PEAR::isError($res=$cyrus->deleteUser($user_to_create))){
     echo "The user $user_to_create was NOT deleted. Reason:" . $res->getMessage() . "\n";
-    
 }else{
     echo "The user $user_to_create was deleted";
 }
@@ -117,7 +116,6 @@ echo "\n";
 echo "deleteUser('$user_to_create_new_name')\n";
 if( PEAR::isError($res=$cyrus->deleteUser($user_to_create_new_name))){
     echo "The user $user_to_create_new_name was NOT deleted. Reason:" . $res->getMessage() . "\n";
-    
 }else{
     echo "The user $user_to_create_new_name was deleted";
 }
@@ -135,7 +133,13 @@ if( PEAR::isError($res=$cyrus->createUser( $user_to_create ) ) ){
 }
 echo "\n";
 
-
+echo "renameUser('$user_to_create','$user_to_create_new_name')\n";
+if( PEAR::isError($res=$cyrus->renameUser( $user_to_create, $user_to_create_new_name ) ) ){
+    echo "The user $user_to_create was NOT renamed. Reason:" . $res->getMessage() . "\n";
+}else{
+        echo "The user $user_to_create was renamed to $user_to_create_new_name";
+}
+echo "\n";
 
 
 
@@ -164,6 +168,24 @@ echo "\n";
 
 echo "getACL('$user_to_create_new_name')\n";
 print_r($cyrus->getACL('user.' . $user_to_create_new_name ));
+echo "\n";
+
+
+// clean up
+echo "deleteUser('$user_to_create')\n";
+if( PEAR::isError($res=$cyrus->deleteUser($user_to_create))){
+    echo "The user $user_to_create was NOT deleted. Reason:" . $res->getMessage() . "\n";
+}else{
+    echo "The user $user_to_create was deleted";
+}
+echo "\n";
+
+echo "deleteUser('$user_to_create_new_name')\n";
+if( PEAR::isError($res=$cyrus->deleteUser($user_to_create_new_name))){
+    echo "The user $user_to_create_new_name was NOT deleted. Reason:" . $res->getMessage() . "\n";
+}else{
+    echo "The user $user_to_create_new_name was deleted";
+}
 echo "\n";
 
 

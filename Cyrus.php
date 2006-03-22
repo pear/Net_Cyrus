@@ -96,6 +96,12 @@ class Net_Cyrus extends Net_IMAP
                 return $ret;
             }
         }else{
+            // Save this information if we aren't in the hack case so that any other
+            // calls to the internal functions still work.
+            $this->_user = $user;
+            $this->_pass = $pass;
+            $this->_host = $host;
+            $this->_port = $port;
             if (PEAR::isError($ret = parent::connect($host, $port) )){
                 return $ret;
             }
@@ -480,22 +486,19 @@ class Net_Cyrus extends Net_IMAP
     function renameUser($oldUser, $newUser)
     {
 
-        $oldUser =$this->getUserName($oldUser);
-
-        $newUser =$this->getUserName($newUser);
-
-
         $oldUsername = $this->getUserName($oldUser,false);
         $newUsername = $this->getUserName($newUser,false);
+
+        $oldUser =$this->getUserName($oldUser);
+        $newUser =$this->getUserName($newUser);
 
         // Check new user doesn't already exist and old user exists
         if (!$this->userExists($oldUsername) ) {
             $msg=sprintf('The user "%s" doesn\'t exist', $oldUsername);
             $code=502;
             return $this->_raiseError($msg, $code);
-
-
         }
+
         if ($this->userExists($newUsername) ) {
             $msg=sprintf('the user "%s" already exists. choose another user name', $newUsername);
             $code=503;
@@ -524,9 +527,6 @@ class Net_Cyrus extends Net_IMAP
         $this->_resetAdminPriv($newUser, $oldAdminPrivs);
         $this->deleteMailbox($oldUser);
     }
-
-
-
 
     /**
      * Copies mail from one folder to another.
