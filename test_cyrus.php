@@ -48,9 +48,6 @@ $port="143";
 $cyrus= new  Net_Cyrus();
 //$cyrus->setDebug(true);
 
-
-
-
 if(PEAR::isError($ret= $cyrus->connect($user,$passwd,$host, $port) ) ){
     echo "Error. "  . $ret->getMessage() . "\n" ;
     exit();

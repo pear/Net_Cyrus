@@ -302,14 +302,15 @@ class Net_Cyrus extends Net_IMAP
      * Creates a mailbox.
      *
      * @param string $mailbox  Name of mailbox to create
+     * @param array  $options  options to pass to create
      *
      *
      * @return mixed  True on success, PEAR error otherwise
      * @access public
      */
-    function createMailbox($mailbox)
+    function createMailbox($mailbox, $options = null)
     {
-        $res= parent::createMailbox($mailbox);
+        $res = parent::createMailbox($mailbox, $options);
         return $res;
     }
 
@@ -318,14 +319,15 @@ class Net_Cyrus extends Net_IMAP
      *
      * @param string $mailbox  Name of mailbox to rename
      * @param string $newname  New name of mailbox
+     * @param array  $options  options to pass to rename
      *
      * @return mixed  True on success, PEAR error otherwise
      * @access public
      */
-    function renameMailbox($mailbox, $newname)
+    function renameMailbox($mailbox, $newname, $options = null)
     {
         $oldPrivs = $this->_setAdminPriv($mailbox);
-        if( PEAR::isError( $response = parent::renameMailbox($mailbox, $newname) )){
+        if( PEAR::isError( $response = parent::renameMailbox($mailbox, $newname, $options) )){
             return $response;
         }
         $this->_resetAdminPriv($mailbox, $oldPrivs);
@@ -441,17 +443,18 @@ class Net_Cyrus extends Net_IMAP
     * creates a user. Use this instead of createMailbox
     *
     * @param string $user_name  the user to create
+    * @param array  $options    options to pass to createMailbox
     *
     * @return mixed true on Success/PearError on Failure
     * @access public
     */
-    function createUser($user_name)
+    function createUser($user_name, $options = null)
     {
         if( $this->userExists($user_name) ){
             return $this->_raiseError("The user $user_name already exists" , 503);
         }
         $user_name=$this->getUserName($user_name);
-        return $this->createMailbox($user_name);
+        return $this->createMailbox($user_name, $options);
     }
 
 
@@ -479,11 +482,12 @@ class Net_Cyrus extends Net_IMAP
      *
      * @param string $oldUser  Name of user to rename
      * @param string $newUser  New name of user
+     * @param array  $options  options to pass to createMailbox and renameMailbox
      *
      * @return mixed true on Success/PearError on Failure
      * @access public
      */
-    function renameUser($oldUser, $newUser)
+    function renameUser($oldUser, $newUser, $options = null)
     {
 
         $oldUsername = $this->getUserName($oldUser,false);
@@ -506,7 +510,7 @@ class Net_Cyrus extends Net_IMAP
         }
 
         // Create the new mailbox
-        $this->createMailbox($newUser);
+        $this->createMailbox($newUser, $options);
         $oldAdminPrivs = $this->_setAdminPriv($newUser);
 
         // Copy Mail and quotas
@@ -519,7 +523,7 @@ class Net_Cyrus extends Net_IMAP
         if (!empty($folderList)) {
             foreach ($folderList as $folder) {
                 $newFolderName = str_replace($oldUser, $newUser, $folder);
-                $this->renameMailbox($folder, $newFolderName);
+                $this->renameMailbox($folder, $newFolderName, $options);
                 $this->setACL($newFolderName, $newUsername, 'lrswipcd');
                 $this->deleteACL($newFolderName, $oldUsername);
             }
