@@ -554,3 +554,5 @@ class Net_Cyrus extends Net_IMAP
     }
 
 }
+
+?>
