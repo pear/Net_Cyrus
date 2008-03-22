@@ -529,7 +529,7 @@ class Net_Cyrus extends Net_IMAP
             }
         }
         $this->_resetAdminPriv($newUser, $oldAdminPrivs);
-        $this->deleteMailbox($oldUser);
+        $this->deleteUser($oldUser);
     }
 
     /**
